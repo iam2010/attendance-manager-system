@@ -63,9 +63,9 @@ a{
 
 
 .sub-main{
-    width: 500px;
+    /* width: 500px; */
     height: 500px;
-    margin: auto;
+    margin: 0px 200px;
     padding-left: 250px;
     padding-top: 20px;
 }
