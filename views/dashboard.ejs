@@ -8,8 +8,8 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-      <link rel="stylesheet" href="css/dashboard.css">
-     
+      <link rel="stylesheet" href="stylesheets/dashboard.css">
+
 </head>
 <body>
     <div class="wrapper">
@@ -34,6 +34,10 @@
     </div>
     <div class="subject-box">
         <!-- Add subject call function here -->
+        <% for(j=0;j<i;j++){ %>
+            <p><%= sub[j].subCode %></p>
+        <%}%>
+
         <button type="button" class="butn" data-toggle="modal" data-target="#myModal"><img src="icons/add1.png"></button>
         <!-- <button class="butn" type="button"><img src="icons/add1.png"></button> -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -46,14 +50,14 @@
                   </div>
                   <div class="modal-body">
                     <!-- Add form here -->
-                    <form method="POST" action="" class="formclass">
+                    <form method="POST" action="/dashboard" class="formclass">
                         <label for="subcode">Subject Code</label>
                         <input type="text" name="subcode" id="subcode" placeholder="E.g. 15CS71">
                         <label for="subname">Subject Name</label>
                         <input type="text" name="subname" id="subname" placeholder="E.g. Web Application"><br>
                         <label for="semester">Semester</label>
-                        <select name="section">
-                            <option>1</option>
+                        <select name="semester">
+                            <option>j</option>
                             <option>2</option>
                             <option>3</option>
                             <option>4</option>
@@ -65,15 +69,15 @@
                         <label for="section">Section</label>
                         <select name="section"><option>A</option><option>B</option></select>
                         <br>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-default" value="Submit">Submit</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
                     </form>
                   </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="btn btn-default">Submit</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
                 </div>
             </div>
+        </div>
     </div>
 
 </body>

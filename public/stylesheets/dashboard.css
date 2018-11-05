@@ -93,6 +93,10 @@ img {
       display: inline-block;
   }
 
+  .formclass select{
+      color:#1a2333;
+  }
+
   #subcode {
       color: black;
   }
