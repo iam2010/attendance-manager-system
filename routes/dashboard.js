@@ -15,10 +15,9 @@ router.get('/',(req,res,next)=>{
             i++;
         });
         res.render('dashboard',{sub : subArray, i : i, j : j});
-        console.log(subArray);
     }
     else{
-        res.render('dashboard',{sub : null});
+        res.render('dashboard',{sub : null, i : i, j : j});
     }
 });
 });

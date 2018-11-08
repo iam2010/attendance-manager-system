@@ -70,8 +70,14 @@ header {
 }
 
 .subject-box div{
-    background: #1a2333;
+    background: lightslategray;
     padding: 1em;
+    border-radius: 10%;
+    color : #1a2333;
+}
+
+.subject-box div:hover{
+    cursor: pointer;
 }
 
 img {

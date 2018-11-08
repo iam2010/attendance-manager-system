@@ -34,10 +34,11 @@
     </div>
     <div class="subject-box">
         <!-- Add subject call function here -->
-        <% for(j=0;j<i;j++){ %>
-            <p><%= sub[j].subCode %></p>
-        <%}%>
-
+        <% if(sub){ %>
+            <% for(j=0 ; j<i ; j++){ %>
+                <div class="subjects"><%= sub[j].subCode %><br>Sub: <%= sub[j].subName %><br>Class: <%= sub[j].semester %> '<%= sub[j].section %>'</div>
+            <% } %>
+        <% } %>
         <button type="button" class="butn" data-toggle="modal" data-target="#myModal"><img src="icons/add1.png"></button>
         <!-- <button class="butn" type="button"><img src="icons/add1.png"></button> -->
         <div class="modal fade" id="myModal" role="dialog">
