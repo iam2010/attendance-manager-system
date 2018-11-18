@@ -5,12 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Attendance</title>
+
+    <script type="text/javascript">
+        function selectAll() {
+            var items = document.getElementsByName('student[]');
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type == 'checkbox')
+                    items[i].checked = true;
+            }
+        }
+    
+        function UnSelectAll() {
+            var items = document.getElementsByName('student[]');
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type == 'checkbox')
+                    items[i].checked = false;
+            }
+        }			
+    </script>
+
 </head>
 <body>
     <h1><%= name %></h1>
     <h2 id="1"><%= strength %></h2>
     
     <p></p>
+    <p>
+		<input type="button" onclick='selectAll()' value="Select All"/>
+		<input type="button" onclick='UnSelectAll()' value="Unselect All"/>
+	</p>
     <script>
         var strength = <%= strength %>;
         for(var i=0; i<strength; i++){
