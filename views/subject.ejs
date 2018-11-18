@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Attendance</title>
+</head>
+<body>
+    <h1><%= name %></h1>
+    <h2 id="1"><%= strength %></h2>
+    <p></p>
+    <script>
+        var strength = <%= strength %>;
+        for(var i=0; i<strength; i++){
+        var a = document.querySelector('p');
+        a.insertAdjacentHTML('beforeend','<input type="checkbox" name="student[]">'+ (i+1) +'&nbsp&nbsp&nbsp&nbsp');
+        }
+    </script>
+</body>
+</html>

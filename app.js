@@ -11,10 +11,10 @@ var bodyParser = require('body-parser');
 var localStrategy = require('passport-local').Strategy;
 mongoose.connect('mongodb://abhinav:pass1234@ds135653.mlab.com:35653/attendance_management',{useNewUrlParser:true});
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var subjectRouter = require('./routes/subject');
 var loginRouter = require('./routes/login');
 var dashboardRouter = require('./routes/dashboard');
-var user = require('./models/user');
+var User = require('./models/user');
 
 //MONGOOSE INITIALIZATION
 mongoose.Promise = global.Promise;
@@ -39,40 +39,45 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'secret',
   resave : true,
-  saveUninitialized: true
+  saveUninitialized: false
 }));
 
-
-//PASSPORT INITIALIZATION
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash())
 
 
 
 //ROUTES
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/subject', subjectRouter);
 app.use('/login', loginRouter);
 app.use('/dashboard', dashboardRouter);
 
 
 
 
+//LOGIN
+
+
+
+
+
 //SUBJECT ENTRY
 app.post('/dashboard', (req, res) => {
-  var subject = new user.classModel({
+  var subject = new User.classModel({
       subCode : req.body.subcode,
       subName : req.body.subname,
       semester : req.body.semester,
       section : req.body.section,
+      strength : req.body.strength
 });
-
 subject.save(function(err,register){
     if(err) return console.log(err);
   });
   res.redirect('/dashboard');
 });
+
+
+
+
 
 
 // catch 404 and forward to error handler

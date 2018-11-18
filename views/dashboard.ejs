@@ -35,11 +35,19 @@
     <div class="subject-box">
         <!-- Add subject call function here -->
         <% if(sub){ %>
-            <% for(j=0 ; j<i ; j++){ %>
-                <div class="sub"><%= sub[j].subCode %><br>Sub: <%= sub[j].subName %><br>Class: <%= sub[j].semester %> '<%= sub[j].section %>'</div>
-            <% } %>
+            <% sub.forEach((el,i)=>{ %>
+                <div class="sub" id=<%= el._id %> ><%= el.subName %><br><br><%= el.subCode %><br><br><%= el.semester %> '<%= el.section %>'</div>
+            <% }) %>
+            <script>
+                var a= document.querySelectorAll('.sub');
+                a.forEach((el,i)=>{
+                    el.addEventListener('click',()=>{
+                        var link = '/subject?id='+event.target.id;
+                        location.href = link;
+                    })
+                })
+            </script>
         <% } %>
-        
         <button type="button" class="butn" data-toggle="modal" data-target="#myModal"><img src="icons/add1.png"></button>
         <!-- <button class="butn" type="button"><img src="icons/add1.png"></button> -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -71,6 +79,8 @@
                         <label for="section">Section</label>
                         <select name="section"><option>A</option><option>B</option></select>
                         <br>
+                        <label for="subname">Subject Name</label>
+                        <input type="number" name="strength" id="strength"><br>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-default" value="Submit">Submit</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

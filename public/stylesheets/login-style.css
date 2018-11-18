@@ -95,5 +95,11 @@ a{
     cursor: pointer;
     border: 2px solid #fff;
     width: 67px;
-    margin-left: 100px; 
+    margin-left: 100px;
+}
+
+.sub-main input[type="submit"]:hover{
+    transform: scale(1.06);
+    transition: transform 0.3;
+    background-color: rgba(255, 255, 255, 0.2)
 }
