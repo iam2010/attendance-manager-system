@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="stylesheets/subject.css">
     <title>Attendance</title>
 
     <script type="text/javascript">
@@ -27,19 +28,22 @@
 </head>
 <body>
     <h1><%= name %></h1>
-    <h2 id="1"><%= strength %></h2>
-    
-    <p></p>
-    <p>
-		<input type="button" onclick='selectAll()' value="Select All"/>
-		<input type="button" onclick='UnSelectAll()' value="Unselect All"/>
-	</p>
-    <script>
-        var strength = <%= strength %>;
-        for(var i=0; i<strength; i++){
-        var a = document.querySelector('p');
-        a.insertAdjacentHTML('beforeend','<input type="checkbox" name="student[]">'+ (i+1) +'&nbsp&nbsp&nbsp&nbsp');
-        }
-    </script>
+    <h2><%= code %></h2>
+    <h2><%= strength %></h2>
+    <form action="/attendance" method="POST">
+        <p></p>
+        <p>
+            <input type="button" onclick='selectAll()' value="Select All"/>
+            <input type="button" onclick='UnSelectAll()' value="Unselect All"/>
+            <button type="submit">Take attendance</button>
+        </p>
+        <script>
+            var strength = <%= strength %>;
+            for(var i=0; i<strength; i++){
+            var a = document.querySelector('p');
+            a.insertAdjacentHTML('beforeend','<input type="checkbox" name="student[]" class="regular-checkbox">'+ (i+1) +'&nbsp&nbsp&nbsp&nbsp');
+            }
+        </script>
+    </form>
 </body>
 </html>

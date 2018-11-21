@@ -52,7 +52,7 @@ header {
     border: 2px solid white;
     height: 300px;
     width: 250px;
-    margin-bottom: 50px;
+    
 }
 
 .sub:hover{
@@ -73,7 +73,7 @@ header {
 }
 
 .subject-box{
-    margin: 150px 50px 150px 50px;
+    margin: 150px 50px 550px 50px;
     height: 200px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);

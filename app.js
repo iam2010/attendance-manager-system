@@ -22,6 +22,24 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
+
+var mongoose = require('mongoose');
+
+
+
+
+
+//LOGIN SCHEMA
+var schema = new mongoose.Schema({
+  user : String,
+  pass : String
+});
+
+var model = mongoose.model('log',schema);
+
+
+
+
 // view engine setup
 var app = express();
 app.use(bodyParser.urlencoded({extended:true}));
@@ -51,11 +69,24 @@ app.use('/subject', subjectRouter);
 app.use('/login', loginRouter);
 app.use('/dashboard', dashboardRouter);
 
-
+ 
 
 
 //LOGIN
-
+app.post('/login',(req,res)=>{
+  var username = req.body.Name;
+  var password = req.body.Password;
+  console.log(username,password);
+  User.classModel.find({subCode : username,strength : password},(errs,doc)=>{
+    if(errs) {
+      console.log(errs)
+    } else {
+      console.log('test')
+      console.log(doc)
+      res.redirect('/dashboard');
+    }
+  })
+})
 
 
 

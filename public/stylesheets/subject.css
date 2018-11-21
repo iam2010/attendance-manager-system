@@ -1,0 +1,22 @@
+html, body {
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height:100%;
+    background: #1a2333 no-repeat 50% 50%;
+    background-size: cover;
+}
+h1,h2{
+    margin: 0px;
+    font-size:3em;
+    color:white;
+    letter-spacing: 6px;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    padding-top: 50px;
+
+}
+

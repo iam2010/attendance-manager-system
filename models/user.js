@@ -14,15 +14,3 @@ var classSchema = new mongoose.Schema({
 var classModel = mongoose.model('teacherSubjects',classSchema);
 
 module.exports.classModel = classModel;
-
-
-
-//LOGIN SCHEMA
-var loginSchema = new mongoose.Schema({
-  user : String,
-  pass : String
-});
-
-var loginModel = mongoose.model('login',loginSchema);
-
-module.exports.loginModel = loginModel;

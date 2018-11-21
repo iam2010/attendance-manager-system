@@ -9,7 +9,6 @@ var subArray = [];
 router.get('/',(req,res,next)=>{
     User.classModel.find({},(err,subs)=>{
     if(subs){
-        console.log(subs);
         var i = 0;
         subs.forEach((sub) => {
             subArray[i] = sub;
