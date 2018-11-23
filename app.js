@@ -45,7 +45,6 @@ app.use(session({
 
 
 
-
 //ROUTES
 app.use('/', indexRouter);
 app.use('/subject', subjectRouter);
@@ -67,6 +66,7 @@ app.post('/login',(req,res)=>{
     }
     else if(doc.length!=0){
       console.log(doc[0]._id);
+       res.redirect('/dashboard?id='+doc[0]._id);
     }
     else{
       console.log('username or password incorrect')
