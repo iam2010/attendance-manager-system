@@ -20,24 +20,7 @@ var User = require('./models/user');
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-
-
 var mongoose = require('mongoose');
-
-
-
-
-
-//LOGIN SCHEMA
-var schema = new mongoose.Schema({
-  user : String,
-  pass : String
-});
-
-var model = mongoose.model('log',schema);
-
-
 
 
 // view engine setup
@@ -77,13 +60,16 @@ app.post('/login',(req,res)=>{
   var username = req.body.Name;
   var password = req.body.Password;
   console.log(username,password);
-  User.classModel.find({subCode : username,strength : password},(errs,doc)=>{
-    if(errs) {
-      console.log(errs)
-    } else {
-      console.log('test')
-      console.log(doc)
-      res.redirect('/dashboard');
+  var b = User.loginModel.find({user:username, pass: password});
+  b.exec((err,doc)=>{
+    if(err){
+      console.log(err);
+    }
+    else if(doc.length!=0){
+      console.log(doc[0]._id);
+    }
+    else{
+      console.log('username or password incorrect')
     }
   })
 })

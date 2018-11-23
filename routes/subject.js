@@ -18,7 +18,6 @@ router.get('/', function(req, res, next) {
   var rawUrl = req.originalUrl;
   var parsedUrl = url.parse(rawUrl);
   parsedQs = querystring.parse(parsedUrl.query);
-  console.log(parsedQs.id);
   User.classModel.findById(parsedQs.id,(err,subject)=>{
     if(subject){
       subjectName = JSON.stringify(subject.subName);
@@ -32,10 +31,5 @@ router.get('/', function(req, res, next) {
     }
   })
 });
-
-subjectClass = subjectClass+subjectSection;
-console.log(subjectClass);
-
-
 
 module.exports = router;
