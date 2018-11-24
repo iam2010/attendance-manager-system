@@ -9,9 +9,7 @@ var classSchema = new mongoose.Schema({
     strength : Number
 });
 
-var classModel = mongoose.model('teacherSubjects',classSchema);
-
-module.exports.classModel = classModel;
+module.exports.classSchema = classSchema;
 
 
 //LOGIN SCHEMA

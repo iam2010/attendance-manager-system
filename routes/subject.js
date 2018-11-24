@@ -10,15 +10,15 @@ var attr = [];
 var subjectClass;
 var subjectSection;
 var subjectName;
-var parsedQs;
 
 
 /* GET student listing. */
 router.get('/', function(req, res, next) {
   var rawUrl = req.originalUrl;
   var parsedUrl = url.parse(rawUrl);
-  parsedQs = querystring.parse(parsedUrl.query);
-  User.classModel.findById(parsedQs.id,(err,subject)=>{
+  var parsedQs = querystring.parse(parsedUrl.query);
+  var classModel = mongoose.model(parsedQs.user,User.classSchema)
+  classModel.findById(parsedQs.id,(err,subject)=>{
     if(subject){
       subjectName = JSON.stringify(subject.subName);
       subjectStrength = JSON.parse(subject.strength);

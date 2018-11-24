@@ -15,6 +15,8 @@ var subjectRouter = require('./routes/subject');
 var loginRouter = require('./routes/login');
 var dashboardRouter = require('./routes/dashboard');
 var User = require('./models/user');
+var url = require('url');
+var querystring = require('querystring');
 
 //MONGOOSE INITIALIZATION
 mongoose.Promise = global.Promise;
@@ -51,7 +53,7 @@ app.use('/subject', subjectRouter);
 app.use('/login', loginRouter);
 app.use('/dashboard', dashboardRouter);
 
- 
+
 
 
 //LOGIN
@@ -65,8 +67,8 @@ app.post('/login',(req,res)=>{
       console.log(err);
     }
     else if(doc.length!=0){
-      console.log(doc[0]._id);
-       res.redirect('/dashboard?id='+doc[0]._id);
+      console.log(doc[0].user+' -app.js');
+       res.redirect('/dashboard?id='+doc[0]._id+'&user='+doc[0].user);
     }
     else{
       console.log('username or password incorrect')
@@ -79,7 +81,13 @@ app.post('/login',(req,res)=>{
 
 //SUBJECT ENTRY
 app.post('/dashboard', (req, res) => {
-  var subject = new User.classModel({
+  var rawUrl = req.headers.referer;
+  console.log(rawUrl+' -app.js')
+  var parsedUrl = url.parse(rawUrl);
+  var parsedQs = querystring.parse(parsedUrl.query);
+  console.log(parsedQs.user+' -app.js 2');
+  var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
+  var subject = new subjectModel({
       subCode : req.body.subcode,
       subName : req.body.subname,
       semester : req.body.semester,
@@ -89,7 +97,7 @@ app.post('/dashboard', (req, res) => {
 subject.save(function(err,register){
     if(err) return console.log(err);
   });
-  res.redirect('/dashboard');
+  res.redirect(rawUrl);
 });
 
 

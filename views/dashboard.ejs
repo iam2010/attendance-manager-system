@@ -9,14 +9,13 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <link rel="stylesheet" href="stylesheets/dashboard.css">
-
 </head>
 <body>
     <div class="wrapper">
         <header>
             <nav>
-                <div class="logo">
-                    Attendance Manager System
+                <div id="head" class="logo">
+                    <%= user %>
                 </div>
 
                 <div class="menu">
@@ -38,15 +37,6 @@
             <% sub.forEach((el,i)=>{ %>
                 <div class="sub" id=<%= el._id %> ><%= el.subName %><br><br><%= el.subCode %><br><br><%= el.semester %> '<%= el.section %>'</div>
             <% }) %>
-            <script>
-                var a= document.querySelectorAll('.sub');
-                a.forEach((el,i)=>{
-                    el.addEventListener('click',()=>{
-                        var link = '/subject?id='+event.target.id;
-                        location.href = link;
-                    })
-                })
-            </script>
         <% } %>
         <button type="button" class="butn" data-toggle="modal" data-target="#myModal"><img src="icons/add1.png"></button>
         <!-- <button class="butn" type="button"><img src="icons/add1.png"></button> -->
@@ -91,7 +81,17 @@
             </div>
         </div>
     </div>
-
+    <script>
+            var a= document.querySelectorAll('.sub');
+            var b = document.querySelector('#head').textContent;
+            b = b.trim();
+            a.forEach((el,i)=>{
+                el.addEventListener('click',()=>{
+                    var link = '/subject?id='+event.target.id+'&user='+b;
+                    location.href = link;
+                })
+            })
+        </script>
 </body>
 </html>
 
