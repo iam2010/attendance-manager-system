@@ -13,7 +13,6 @@ router.get('/',(req,res,next)=>{
     var parsedUrl = url.parse(rawUrl);
     var parsedQs = querystring.parse(parsedUrl.query);
     User.loginModel.findById(parsedQs.id,(err,doc)=>{
-        console.log(doc.user+' -dashboard');
         var subjectModel = mongoose.model(doc.user,User.classSchema);
         subjectModel.find({},(err,subs)=>{
         if(subs){
