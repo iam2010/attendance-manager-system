@@ -12,12 +12,26 @@ var classSchema = new mongoose.Schema({
 module.exports.classSchema = classSchema;
 
 
+
 //LOGIN SCHEMA
 var loginSchema = new mongoose.Schema({
     user : String,
     pass : String
-  });
-  
-  var loginModel = mongoose.model('logs',loginSchema);
+});
 
-  module.exports.loginModel = loginModel;
+var loginModel = mongoose.model('logs',loginSchema);
+
+module.exports.loginModel = loginModel;
+
+var attendanceSchema = new mongoose.Schema({
+    rollNo : Number,
+    attendance : Number
+  })
+
+module.exports.attendanceSchema = attendanceSchema;
+
+var totalSchema = mongoose.Schema({
+    totalClasses : Number
+})
+
+module.exports.totalSchema = totalSchema;

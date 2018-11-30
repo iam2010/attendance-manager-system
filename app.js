@@ -4,19 +4,17 @@ var flash = require('connect-flash');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session');
-var passport = require('passport');
-var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var localStrategy = require('passport-local').Strategy;
+var url = require('url');
+var querystring = require('querystring');
+var mongoose = require('mongoose');
 mongoose.connect('mongodb://abhinav:pass1234@ds135653.mlab.com:35653/attendance_management',{useNewUrlParser:true});
 var indexRouter = require('./routes/index');
 var subjectRouter = require('./routes/subject');
 var loginRouter = require('./routes/login');
 var dashboardRouter = require('./routes/dashboard');
 var User = require('./models/user');
-var url = require('url');
-var querystring = require('querystring');
+
 
 //MONGOOSE INITIALIZATION
 mongoose.Promise = global.Promise;
@@ -37,13 +35,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-//SESSION INITIALIZATION
-app.use(session({
-  secret: 'secret',
-  resave : true,
-  saveUninitialized: false
-}));
 
 
 
@@ -67,7 +58,7 @@ app.post('/login',(req,res)=>{
       console.log(err);
     }
     else if(doc.length!=0){
-      console.log(doc[0].user+' -app.js');
+      console.log(doc[0].user+doc[0].pass+' -app.js');
        res.redirect('/dashboard?id='+doc[0]._id+'&user='+doc[0].user);
     }
     else{
@@ -102,6 +93,45 @@ subject.save(function(err,register){
 
 
 
+
+
+//ATTENDANCE
+app.post('/attendance', (req, res) => {
+  var rawUrl = req.headers.referer;
+  var parsedUrl = url.parse(rawUrl);
+  var parsedQs = querystring.parse(parsedUrl.query);
+  var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
+  subjectModel.findById(parsedQs.id,(err,docs)=>{
+    var subject = docs.subName;
+    var currClass = docs.semester+docs.section;
+    var collection = subject+currClass;
+    var strength = docs.strength;
+    console.log('collection-'+collection);
+    var presentStudents = req.body.student;
+    var attendanceModel = mongoose.model(collection,User.attendanceSchema)
+    attendanceModel.findOne({rollNo : 1},(err,docs)=>{
+      if(docs){
+        console.log('docs-'+docs);
+        presentStudents.forEach(element => {
+          console.log(element)
+          attendanceModel.findOneAndUpdate({rollNo : element},{$inc : {attendance : 1}},(err,doc)=>{
+            console.log('doc-'+doc);
+          })
+        });
+      }
+      else{
+        for(var i=1; i<=strength; i++){
+          var student = {
+            rollNo : i,
+            attendance : 0
+          }
+        attendanceModel.create(student);
+        }
+      }
+    })
+  })
+   res.redirect(rawUrl);
+});
 
 
 

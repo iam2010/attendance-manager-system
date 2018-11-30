@@ -15,33 +15,34 @@
                     items[i].checked = true;
             }
         }
-    
+
         function UnSelectAll() {
             var items = document.getElementsByName('student[]');
             for (var i = 0; i < items.length; i++) {
                 if (items[i].type == 'checkbox')
                     items[i].checked = false;
             }
-        }			
+        }
     </script>
 
 </head>
 <body>
-    <h1><%= name %></h1>
-    <h2><%= code %></h2>
-    <h2><%= strength %></h2>
     <form action="/attendance" method="POST">
+        <h1 id="sub"><%= name %></h1>
+        <h2 id="code"><%= code %></h2>
+        <h2 id="strength"><%= strength %></h2>
         <p></p>
         <p>
             <input type="button" onclick='selectAll()' value="Select All"/>
             <input type="button" onclick='UnSelectAll()' value="Unselect All"/>
             <button type="submit">Take attendance</button>
+            <button type="submit">Register Students (First Class Only)</button>
         </p>
         <script>
             var strength = <%= strength %>;
             for(var i=0; i<strength; i++){
             var a = document.querySelector('p');
-            a.insertAdjacentHTML('beforeend','<input type="checkbox" name="student[]" class="regular-checkbox">'+ (i+1) +'&nbsp&nbsp&nbsp&nbsp');
+            a.insertAdjacentHTML('beforeend','<input type="checkbox" name="student[]" class="regular-checkbox" value='+(i+1)+'>'+ (i+1) +'&nbsp&nbsp&nbsp&nbsp');
             }
         </script>
     </form>

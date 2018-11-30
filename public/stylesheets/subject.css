@@ -6,6 +6,7 @@ html, body {
     height:100%;
     background: #1a2333 no-repeat 50% 50%;
     background-size: cover;
+    color: white;
 }
 h1,h2{
     margin: 0px;
@@ -19,4 +20,3 @@ h1,h2{
     padding-top: 50px;
 
 }
-
