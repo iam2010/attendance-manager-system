@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Attendance Manager</title>
+    <link rel="stylesheet" href="stylesheets/status.css">
+</head>
+<body>
+    <div id="particles-js">
+        <div class="btext">
+            <form method="POST" action="/status">
+                <label for="subject">Subject:</label>
+                <input type="text" name="subject" onkeyup="return forceLower(this)">
+                <label for="subject">Semester:</label>
+                <input type="number" name="semester">
+                <label for="subject">Section:</label>
+                <input type="text" name="section" onkeyup="return forceLower(this)">
+                <label for="rollNo">Roll number:</label>
+                <input type="number" name="rollNo">
+                <button type="submit">Get Status</button>
+            </form>
+            <script>
+                    function forceLower(strInput)
+                        {
+                        strInput.value=strInput.value.toLowerCase();
+                        }
+            </script>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        particlesJS.load('particles-js', 'particles.json',
+        function(){
+            console.log('particles.json loaded...')
+        })
+    </script>
+</body>
+</html>

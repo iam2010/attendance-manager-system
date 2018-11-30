@@ -54,7 +54,7 @@
                         <label for="subcode">Subject Code</label>
                         <input type="text" name="subcode" id="subcode" placeholder="E.g. 15CS71">
                         <label for="subname">Subject Name</label>
-                        <input type="text" name="subname" id="subname" placeholder="E.g. Web Application"><br><br>
+                        <input type="text" name="subname" id="subname" onkeyup="return forceLower(this);" placeholder="E.g. Web Application"><br><br>
                         <label for="semester">Semester</label>
                         <select name="semester">
                             <option>1</option>
@@ -67,8 +67,14 @@
                             <option>8</option>
                         </select>
                         <label for="section">Section</label>
-                        <select name="section"><option>A</option><option>B</option></select>
+                        <select name="section"><option>a</option><option>b</option></select>
                         <br>
+                        <script>
+                            function forceLower(strInput)
+                                {
+                                strInput.value=strInput.value.toLowerCase();
+                                }
+                        </script>
                         <label for="subname">Class Strength</label>
                         <input type="number" name="strength" id="strength"><br><br>
                         <div class="modal-footer">

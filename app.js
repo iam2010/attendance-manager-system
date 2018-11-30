@@ -13,6 +13,7 @@ var indexRouter = require('./routes/index');
 var subjectRouter = require('./routes/subject');
 var loginRouter = require('./routes/login');
 var dashboardRouter = require('./routes/dashboard');
+var statusRouter = require('./routes/status')
 var User = require('./models/user');
 
 
@@ -43,6 +44,7 @@ app.use('/', indexRouter);
 app.use('/subject', subjectRouter);
 app.use('/login', loginRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/status',statusRouter);
 
 
 
@@ -101,6 +103,7 @@ app.post('/attendance', (req, res) => {
   var parsedUrl = url.parse(rawUrl);
   var parsedQs = querystring.parse(parsedUrl.query);
   var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
+
   subjectModel.findById(parsedQs.id,(err,docs)=>{
     var subject = docs.subName;
     var currClass = docs.semester+docs.section;
@@ -108,10 +111,15 @@ app.post('/attendance', (req, res) => {
     var strength = docs.strength;
     console.log('collection-'+collection);
     var presentStudents = req.body.student;
-    var attendanceModel = mongoose.model(collection,User.attendanceSchema)
+    var attendanceModel = mongoose.model('attendance',User.attendanceSchema,collection)
+    var totalModel = mongoose.model('total',User.totalSchema,collection);
+
     attendanceModel.findOne({rollNo : 1},(err,docs)=>{
       if(docs){
         console.log('docs-'+docs);
+        totalModel.findByIdAndUpdate(parsedQs.id,{$inc : {total : 1}},(err,doc)=>{
+          console.log(doc)
+        })
         presentStudents.forEach(element => {
           console.log(element)
           attendanceModel.findOneAndUpdate({rollNo : element},{$inc : {attendance : 1}},(err,doc)=>{
@@ -127,11 +135,26 @@ app.post('/attendance', (req, res) => {
           }
         attendanceModel.create(student);
         }
+        var mongoId = new mongoose.mongo.ObjectId(parsedQs.id);
+        console.log('id-'+mongoId)
+        totalModel.create({_id: mongoId,total : 0});
       }
     })
   })
    res.redirect(rawUrl);
 });
+
+
+
+
+
+//ATTENDANCE STATUS
+app.post('/status', (req, res) => {
+  var collection = req.body.subject + req.body.semester + req.body.section;
+  var rollNo = req.body.rollNo;
+  var statusModel = mongoose.model(User.attendanceSchema,collection);
+});
+
 
 
 
