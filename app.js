@@ -7,8 +7,11 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var url = require('url');
 var querystring = require('querystring');
+var dialog = require('dialog');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://abhinav:pass1234@ds135653.mlab.com:35653/attendance_management',{useNewUrlParser:true});
+mongoose.plugin(require('mongoose-regex-search'));
+var session = require('express-session')
 var indexRouter = require('./routes/index');
 var subjectRouter = require('./routes/subject');
 var loginRouter = require('./routes/login');
@@ -47,6 +50,19 @@ app.use('/dashboard', dashboardRouter);
 app.use('/status',statusRouter);
 
 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true
+}))
+
+//CONNECT FLASH
+app.use(flash());
+app.use((req,res,next)=>{
+  res.locals.messages = require('express-messages')(req,res);
+    next();
+})
+
 
 
 //LOGIN
@@ -61,10 +77,11 @@ app.post('/login',(req,res)=>{
     }
     else if(doc.length!=0){
       console.log(doc[0].user+doc[0].pass+' -app.js');
-       res.redirect('/dashboard?id='+doc[0]._id+'&user='+doc[0].user);
+       res.redirect('/dashboard?session=0FAB3CF577ABF75EF246F53AE&id='+doc[0]._id+'&user='+doc[0].user);
     }
     else{
-      console.log('username or password incorrect')
+      dialog.err("Incorrect username or password");
+       res.redirect('/login');
     }
   })
 })
@@ -80,18 +97,72 @@ app.post('/dashboard', (req, res) => {
   var parsedQs = querystring.parse(parsedUrl.query);
   console.log(parsedQs.user+' -app.js 2');
   var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
-  var subject = new subjectModel({
-      subCode : req.body.subcode,
-      subName : req.body.subname,
-      semester : req.body.semester,
-      section : req.body.section,
-      strength : req.body.strength
+  if(req.body.semester && req.body.section){
+    var subject = new subjectModel({
+        subCode : req.body.subcode,
+        subName : req.body.subname,
+        semester : req.body.semester,
+        section : req.body.section,
+        strength : req.body.strength
+    });
+    subject.save(function(err,register){
+      if(err) return console.log(err);
+    });
+    dialog.info('Subject added')
+    res.redirect(rawUrl);
+  }
+  else{
+    subjectModel.findOneAndDelete({subCode : req.body.subCode , subName : req.body.subName},(err,doc)=>{
+      console.log(doc);
+    })
+  }
 });
-subject.save(function(err,register){
-    if(err) return console.log(err);
-  });
-  res.redirect(rawUrl);
+
+
+
+
+
+
+//REGISTER
+app.post('/register', (req, res) => {
+  var rawUrl = req.headers.referer;
+  var parsedUrl = url.parse(rawUrl);
+  var parsedQs = querystring.parse(parsedUrl.query);
+  var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
+
+  subjectModel.findById(parsedQs.id,(err,docs)=>{
+    var subject = docs.subName;
+    var currClass = docs.semester+docs.section;
+    var collection = subject+currClass;
+    var strength = docs.strength;
+    console.log('collection-'+collection);
+    var presentStudents = req.body.student;
+    var attendanceModel = mongoose.model('attendance',User.attendanceSchema,collection)
+    var totalModel = mongoose.model('total',User.totalSchema,collection);
+
+    attendanceModel.findOne({rollNo : 1},(err,docs)=>{
+      if(docs){
+        dialog.info('Class already registered');
+         res.redirect(rawUrl);
+      }
+      else{
+        for(var i=1; i<=strength; i++){
+          var student = {
+            rollNo : i,
+            attendance : 0
+          }
+        attendanceModel.create(student);
+        }
+        var mongoId = new mongoose.mongo.ObjectId(parsedQs.id);
+        console.log('id-'+mongoId)
+        totalModel.create({_id: mongoId,total : 0});
+        dialog.info('class registered');
+        res.redirect(rawUrl);
+      }
+    })
+  })
 });
+
 
 
 
@@ -114,7 +185,7 @@ app.post('/attendance', (req, res) => {
     var attendanceModel = mongoose.model('attendance',User.attendanceSchema,collection)
     var totalModel = mongoose.model('total',User.totalSchema,collection);
 
-    attendanceModel.findOne({rollNo : 1},(err,docs)=>{
+    attendanceModel.find({rollNo : 1},(err,docs)=>{
       if(docs){
         console.log('docs-'+docs);
         totalModel.findByIdAndUpdate(parsedQs.id,{$inc : {total : 1}},(err,doc)=>{
@@ -126,22 +197,15 @@ app.post('/attendance', (req, res) => {
             console.log('doc-'+doc);
           })
         });
+        dialog.info('Attendance taken');
+         res.redirect(rawUrl);
       }
       else{
-        for(var i=1; i<=strength; i++){
-          var student = {
-            rollNo : i,
-            attendance : 0
-          }
-        attendanceModel.create(student);
-        }
-        var mongoId = new mongoose.mongo.ObjectId(parsedQs.id);
-        console.log('id-'+mongoId)
-        totalModel.create({_id: mongoId,total : 0});
+        dialog.info('Class not registered');
+        res.redirect(rawUrl);
       }
     })
   })
-   res.redirect(rawUrl);
 });
 
 
@@ -152,8 +216,14 @@ app.post('/attendance', (req, res) => {
 app.post('/status', (req, res) => {
   var collection = req.body.subject + req.body.semester + req.body.section;
   var rollNo = req.body.rollNo;
-  var statusModel = mongoose.model(User.attendanceSchema,collection);
+  var statusModel = mongoose.model('attendance',User.attendanceSchema,collection);
+  statusModel.findOne({rollNo : rollNo},(err,doc)=>{
+    res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
+  })
 });
+
+
+
 
 
 

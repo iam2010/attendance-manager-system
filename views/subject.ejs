@@ -36,7 +36,6 @@
             <input type="button" onclick='selectAll()' value="Select All"/>
             <input type="button" onclick='UnSelectAll()' value="Unselect All"/>
             <button type="submit">Take attendance</button>
-            <button type="submit">Register Students (First Class Only)</button>
         </p>
         <script>
             var strength = <%= strength %>;
@@ -45,6 +44,9 @@
             a.insertAdjacentHTML('beforeend','<input type="checkbox" name="student[]" class="regular-checkbox" value='+(i+1)+'>'+ (i+1) +'&nbsp&nbsp&nbsp&nbsp');
             }
         </script>
+    </form>
+    <form method="POST" action="/register">
+        <button type="submit">Register Students (First Class Only)</button>
     </form>
 </body>
 </html>

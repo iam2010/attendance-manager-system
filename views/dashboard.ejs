@@ -24,7 +24,7 @@
                         <li><a href="#">About</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Contact</a></li>
-                        <li><a href="#">Logout</a></li>
+                        <li><a href="/login">Logout</a></li>
                     </ul>
                     <hr>
                 </div>
@@ -52,9 +52,9 @@
                     <!-- Add form here -->
                     <form method="POST" action="/dashboard" class="formclass">
                         <label for="subcode">Subject Code</label>
-                        <input type="text" name="subcode" id="subcode" placeholder="E.g. 15CS71">
+                        <input type="text" name="subcode" id="subcode" placeholder="E.g. 15CS71" required>
                         <label for="subname">Subject Name</label>
-                        <input type="text" name="subname" id="subname" onkeyup="return forceLower(this);" placeholder="E.g. Web Application"><br><br>
+                        <input type="text" name="subname" id="subname" onkeyup="return forceLower(this);" placeholder="E.g. Web Application" required><br><br>
                         <label for="semester">Semester</label>
                         <select name="semester">
                             <option>1</option>
@@ -67,7 +67,7 @@
                             <option>8</option>
                         </select>
                         <label for="section">Section</label>
-                        <select name="section"><option>a</option><option>b</option></select>
+                        <select name="section" required><option>a</option><option>b</option></select>
                         <br>
                         <script>
                             function forceLower(strInput)
@@ -79,6 +79,7 @@
                         <input type="number" name="strength" id="strength"><br><br>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-default" value="Submit">Submit</button>
+                            <button type="submit" class="btn btn-default" value="button">Delete</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>
@@ -94,7 +95,7 @@
             a.forEach((el,i)=>{
                 el.addEventListener('click',()=>{
                     var link = '/subject?id='+event.target.id+'&user='+b;
-                    location.href = link;
+                    window.open(link,'_blank')
                 })
             })
         </script>
