@@ -1,6 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
-var flash = require('connect-flash');
+var flash = require('express-flash-notification');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://abhinav:pass1234@ds135653.mlab.com:35653/attendance_management',{useNewUrlParser:true});
 mongoose.plugin(require('mongoose-regex-search'));
 var session = require('express-session')
+var alert = require('alert-node')
 var hex = "0FAB3CF577ABF75EF246F53AE"
 var indexRouter = require('./routes/index');
 var subjectRouter = require('./routes/subject');
@@ -39,7 +40,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+//SESSION
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true
+}))
+//EXPRESS FLASH
+app.use(flash(app));
 
 
 //ROUTES
@@ -49,19 +57,6 @@ app.use('/login', loginRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/status',statusRouter);
 
-
-app.use(session({
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true
-}))
-
-//CONNECT FLASH
-app.use(flash());
-app.use((req,res,next)=>{
-  res.locals.messages = require('express-messages')(req,res);
-    next();
-})
 
 
 
@@ -236,6 +231,7 @@ app.post('/statuses', (req, res) => {
       res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
     }
     else{
+     alert('Incorrect information')
        res.redirect('/status');
     }
   })
