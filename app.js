@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://abhinav:pass1234@ds135653.mlab.com:35653/attendance_management',{useNewUrlParser:true});
 mongoose.plugin(require('mongoose-regex-search'));
 var session = require('express-session')
+var hex = "0FAB3CF577ABF75EF246F53AE"
 var indexRouter = require('./routes/index');
 var subjectRouter = require('./routes/subject');
 var loginRouter = require('./routes/login');
@@ -38,7 +39,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 
 
@@ -77,7 +77,7 @@ app.post('/login',(req,res)=>{
     }
     else if(doc.length!=0){
       console.log(doc[0].user+doc[0].pass+' -app.js');
-       res.redirect('/dashboard?session=0FAB3CF577ABF75EF246F53AE&id='+doc[0]._id+'&user='+doc[0].user);
+       res.redirect('/dashboard?session='+hex+'&id='+doc[0]._id+'&user='+doc[0].user);
     }
     else{
       dialog.err("Incorrect username or password");
@@ -97,7 +97,6 @@ app.post('/dashboard', (req, res) => {
   var parsedQs = querystring.parse(parsedUrl.query);
   console.log(parsedQs.user+' -app.js 2');
   var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
-  if(req.body.semester && req.body.section){
     var subject = new subjectModel({
         subCode : req.body.subcode,
         subName : req.body.subname,
@@ -110,14 +109,28 @@ app.post('/dashboard', (req, res) => {
     });
     dialog.info('Subject added')
     res.redirect(rawUrl);
-  }
-  else{
-    subjectModel.findOneAndDelete({subCode : req.body.subCode , subName : req.body.subName},(err,doc)=>{
-      console.log(doc);
-    })
-  }
 });
 
+
+
+
+
+//DELETE SUBJECT
+app.post('/delete', (req, res) => {
+  var rawUrl = req.headers.referer;
+  var parsedUrl = url.parse(rawUrl);
+  var parsedQs = querystring.parse(parsedUrl.query);
+  console.log(parsedQs.user)
+  var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
+  subjectModel.findByIdAndDelete(parsedQs.id,(err,doc)=>{
+    console.log(doc);
+  });
+  dialog.info('Subject deleted')
+  User.loginModel.findOne({user : parsedQs.user},(err,docs)=>{
+    process.exit(1);
+     res.redirect('/dashboard?session='+hex+'&id='+docs._id+'&user='+parsedQs.user);
+  })
+});
 
 
 
@@ -126,6 +139,7 @@ app.post('/dashboard', (req, res) => {
 //REGISTER
 app.post('/register', (req, res) => {
   var rawUrl = req.headers.referer;
+  console.log(rawUrl)
   var parsedUrl = url.parse(rawUrl);
   var parsedQs = querystring.parse(parsedUrl.query);
   var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
@@ -213,12 +227,18 @@ app.post('/attendance', (req, res) => {
 
 
 //ATTENDANCE STATUS
-app.post('/status', (req, res) => {
+app.post('/statuses', (req, res) => {
   var collection = req.body.subject + req.body.semester + req.body.section;
   var rollNo = req.body.rollNo;
   var statusModel = mongoose.model('attendance',User.attendanceSchema,collection);
   statusModel.findOne({rollNo : rollNo},(err,doc)=>{
-    res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
+    if(doc){
+      res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
+    }
+    else{
+      dialog.info('Enter the details correctly');
+       res.redirect('/status');
+    }
   })
 });
 
