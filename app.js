@@ -236,7 +236,6 @@ app.post('/statuses', (req, res) => {
       res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
     }
     else{
-      dialog.info('Enter the details correctly');
        res.redirect('/status');
     }
   })
