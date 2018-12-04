@@ -1,6 +1,5 @@
 var createError = require('http-errors');
 var express = require('express');
-var flash = require('express-flash-notification');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -8,12 +7,9 @@ var bodyParser = require('body-parser');
 var cmd = require('node-cmd')
 var url = require('url');
 var querystring = require('querystring');
-var dialog = require('dialog');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://abhinav:pass1234@ds135653.mlab.com:35653/attendance_management',{useNewUrlParser:true});
-mongoose.plugin(require('mongoose-regex-search'));
 var session = require('express-session')
-var alert = require('alert-node')
 var hex = "0FAB3CF577ABF75EF246F53AE"
 var indexRouter = require('./routes/index');
 var subjectRouter = require('./routes/subject');
@@ -41,14 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-//SESSION
-app.use(session({
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true
-}))
-//EXPRESS FLASH
-app.use(flash(app));
+
 
 
 //ROUTES
@@ -112,13 +101,17 @@ app.post('/dashboard', (req, res) => {
 //DELETE SUBJECT
 app.post('/delete', (req, res) => {
   var rawUrl = req.headers.referer;
+  console.log(rawUrl)
   var parsedUrl = url.parse(rawUrl);
   var parsedQs = querystring.parse(parsedUrl.query);
   console.log(parsedQs.user)
   var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
   subjectModel.findByIdAndDelete(parsedQs.id,(err,doc)=>{
-    console.log(doc);
-    res.send('<body style="background-color:#1a2333"><script>window.alert("Subject deleted");window.close();</script></body>"');
+    var collection = doc.subName+doc.semester+doc.section;
+    mongoose.connection.db.dropCollection(collection);
+      console.log(doc)
+      res.send('<body style="background-color:#1a2333"><script>window.alert("Subject deleted");window.close();</script></body>');
+
   });
 });
 
