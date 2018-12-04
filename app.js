@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var cmd = require('node-cmd')
 var url = require('url');
 var querystring = require('querystring');
 var dialog = require('dialog');
@@ -75,8 +76,7 @@ app.post('/login',(req,res)=>{
        res.redirect('/dashboard?session='+hex+'&id='+doc[0]._id+'&user='+doc[0].user);
     }
     else{
-      dialog.err("Incorrect username or password");
-       res.redirect('/login');
+      res.send('<body style="background-color:#1a2333"><script>window.alert("Incorrect username or password");location.href="/login"</script></body>');
     }
   })
 })
@@ -102,8 +102,7 @@ app.post('/dashboard', (req, res) => {
     subject.save(function(err,register){
       if(err) return console.log(err);
     });
-    dialog.info('Subject added')
-    res.redirect(rawUrl);
+    res.send('<body style="background-color:#1a2333"><script>window.alert("Subject added");location.href="'+rawUrl+'"</script></body>');
 });
 
 
@@ -119,12 +118,8 @@ app.post('/delete', (req, res) => {
   var subjectModel = mongoose.model(parsedQs.user,User.classSchema);
   subjectModel.findByIdAndDelete(parsedQs.id,(err,doc)=>{
     console.log(doc);
+    res.send('<body style="background-color:#1a2333"><script>window.alert("Subject deleted");window.close();</script></body>"');
   });
-  dialog.info('Subject deleted')
-  User.loginModel.findOne({user : parsedQs.user},(err,docs)=>{
-    process.exit(1);
-     res.redirect('/dashboard?session='+hex+'&id='+docs._id+'&user='+parsedQs.user);
-  })
 });
 
 
@@ -151,8 +146,7 @@ app.post('/register', (req, res) => {
 
     attendanceModel.findOne({rollNo : 1},(err,docs)=>{
       if(docs){
-        dialog.info('Class already registered');
-         res.redirect(rawUrl);
+        res.send('<body style="background-color:#1a2333"><script>window.alert("Class is already registered");location.href="'+rawUrl+'"</script></body>');
       }
       else{
         for(var i=1; i<=strength; i++){
@@ -165,8 +159,7 @@ app.post('/register', (req, res) => {
         var mongoId = new mongoose.mongo.ObjectId(parsedQs.id);
         console.log('id-'+mongoId)
         totalModel.create({_id: mongoId,total : 0});
-        dialog.info('class registered');
-        res.redirect(rawUrl);
+        res.send('<body style="background-color:#1a2333"><script>window.alert("Class registered");location.href="'+rawUrl+'"</script></body>');
       }
     })
   })
@@ -200,18 +193,20 @@ app.post('/attendance', (req, res) => {
         totalModel.findByIdAndUpdate(parsedQs.id,{$inc : {total : 1}},(err,doc)=>{
           console.log(doc)
         })
-        presentStudents.forEach(element => {
-          console.log(element)
-          attendanceModel.findOneAndUpdate({rollNo : element},{$inc : {attendance : 1}},(err,doc)=>{
-            console.log('doc-'+doc);
-          })
-        });
-        dialog.info('Attendance taken');
-         res.redirect(rawUrl);
+        if(presentStudents != undefined){
+          presentStudents.forEach(element => {
+            console.log(element)
+            attendanceModel.findOneAndUpdate({rollNo : element},{$inc : {attendance : 1}},(err,doc)=>{
+              console.log('doc-'+doc);
+            })
+          });
+        }
+        else{
+        }
+        res.send('<body style="background-color:#1a2333"><script>window.alert("Attendance taken");location.href="'+rawUrl+'"</script></body>');
       }
       else{
-        dialog.info('Class not registered');
-        res.redirect(rawUrl);
+        res.send('<body style="background-color:#1a2333"><script>window.alert("Class not registered");location.href="'+rawUrl+'"</script></body>');
       }
     })
   })
@@ -228,11 +223,13 @@ app.post('/statuses', (req, res) => {
   var statusModel = mongoose.model('attendance',User.attendanceSchema,collection);
   statusModel.findOne({rollNo : rollNo},(err,doc)=>{
     if(doc){
+      statusModel.find({},(err,docs)=>{
+        console.log(docs);
+      })
       res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
     }
     else{
-     alert('Incorrect information')
-       res.redirect('/status');
+      res.send('<body style="background-color:#1a2333"><script>window.alert("Please enter correct information");location.href="/status"</script></body>');
     }
   })
 });
