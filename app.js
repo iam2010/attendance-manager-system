@@ -214,12 +214,20 @@ app.post('/statuses', (req, res) => {
   var collection = req.body.subject + req.body.semester + req.body.section;
   var rollNo = req.body.rollNo;
   var statusModel = mongoose.model('attendance',User.attendanceSchema,collection);
+  var total;
   statusModel.findOne({rollNo : rollNo},(err,doc)=>{
     if(doc){
-      statusModel.find({},(err,docs)=>{
-        console.log(docs);
+      var totalModel = mongoose.model('total',User.totalSchema,collection);
+      totalModel.find({},(err,docs)=>{
+        docs.forEach((el,i)=>{
+          if(el.total == undefined){
+            console.log('te'+el)
+          }
+          else{
+            res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1><h1 style="text-align:center;color:white;">Classes taken: '+el.total+'</h1><h1 style="text-align:center;color:white;">Percentage: '+(doc.attendance/el.total)*100+'%</h1></body>')
+          }
+        })
       })
-      res.write('<body style="background-color:#1a2333"><h1 style="text-align:center;color:white;">Classes attended: '+doc.attendance+'</h1></body>')
     }
     else{
       res.send('<body style="background-color:#1a2333"><script>window.alert("Please enter correct information");location.href="/status"</script></body>');
